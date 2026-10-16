@@ -125,21 +125,4 @@ JUnit 5 tests in `src/test/java/` use `@TempDir` for **Fast, Independent, Repeat
 
 `diagram.puml` contains a PlantUML class diagram covering the client, both facades, persistence and all subsystems. Export it as PNG/SVG using PlantUML or an IDE plugin and include the exported diagram in the submission. Do not submit the `.puml` alone if the examiner explicitly requires an image/vector file.
 
-## What to submit
 
-1. GitHub repository link with all code, README, exported UML and tests.
-2. `mvn clean verify` test output and JaCoCo report (coverage >=80%).
-3. Real CLI demo and the ability to reproduce all 3 paths and a restart.
-4. Commit history where unit tests were added alongside their implementations (F.I.R.S.T. Timely).
-5. Moodle link before the instructor's announced deadline.
-
-## Oral defense quick notes
-
-- **Facade:** `GreenhouseFacade`, `AdministrationFacade`.
-- **Business rules:** `IrrigationScheduler`, `VentilationUnit`, `NutrientDispenser`.
-- **Entities:** `WaterReservation`, `ClimateAction`, `NutritionRecord`.
-- **Persistence:** `ReservationRepository`, `ClimateRepository`, `NutritionRepository`, and `CycleRepository`; CSV files on disk.
-- **One-step rollback:** B fails -> cancel A.
-- **Two-step rollback:** C fails -> STOP B, then CANCEL A.
-- **Why CSV:** lightweight real durable state, no DB server required.
-- **Why not Adapter:** nothing needs an incompatible interface translation; we simplify workflow coordination.
