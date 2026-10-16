@@ -1,0 +1,41 @@
+digraph GreenhouseUML {
+  graph [rankdir=TB, bgcolor="white", fontname="Arial", nodesep="0.25", ranksep="0.7", splines=polyline];
+  node [shape=record, fontsize=11, fontname="Arial", style="rounded,filled", fillcolor="white", color="#64748b"];
+  edge [arrowsize=.6, color="#64748b", fontsize=9, fontname="Arial"];
+  Main [label="{Main (Client)|+ main(args)}", fillcolor="#e5e7eb"];
+  GreenhouseFacade [label="{GreenhouseFacade|+ startCycle()\l+ executeB()\l+ finishC()\l+ resume()\l+ compensate()\l+ runCycle()\l}", fillcolor="#e0e7ff"];
+  AdministrationFacade [label="{AdministrationFacade|+ inspect()\l+ listCycles()\l+ manuallyCompensate()\l}", fillcolor="#e0e7ff"];
+  CycleRecord [label="{CycleRecord|stage: Stage\l+ moveTo()\l}"];
+  CycleRepository [label="{CycleRepository|+ save()\l+ find()\l+ ids()\l}"];
+  subgraph cluster_A {
+    label="Subsystem A — Reservation"; style="rounded,filled"; color="#99f6e4"; fillcolor="#f0fdfa";
+    SoilSensorArray [label="{SoilSensorArray|+ read()}"];
+    IrrigationScheduler [label="{IrrigationScheduler|+ reserveLiters()}"];
+    WaterReservation [label="{WaterReservation|status: NEW / RESERVED / CANCELLED / FINISHED\l+ reserve() / cancel() / finish()\l}"];
+    ReservationRepository [label="{ReservationRepository|+ save() / find()}"];
+  }
+  subgraph cluster_B {
+    label="Subsystem B — Execution"; style="rounded,filled"; color="#93c5fd"; fillcolor="#eff6ff";
+    IrrigationController [label="{IrrigationController|+ verify()}"];
+    VentilationUnit [label="{VentilationUnit|+ minutes()}"];
+    ClimateAction [label="{ClimateAction|status: NEW / ACTIVE / STOPPED / COMPLETED\l+ activate() / stop() / complete()\l}"];
+    ClimateRepository [label="{ClimateRepository|+ save() / find()}"];
+  }
+  subgraph cluster_C {
+    label="Subsystem C — Confirmation"; style="rounded,filled"; color="#fed7aa"; fillcolor="#fff7ed";
+    NutrientDispenser [label="{NutrientDispenser|+ doseMg()}"];
+    AlertService [label="{AlertService|+ message()}"];
+    NutritionRecord [label="{NutritionRecord|status: NEW / APPLIED / CANCELLED\l+ apply() / cancel()\l}"];
+    NutritionRepository [label="{NutritionRepository|+ save() / find()}"];
+  }
+  CsvStore [label="{CsvStore|+ read() / write() / ids()}", fillcolor="#f3f4f6"];
+  Main -> GreenhouseFacade; Main -> AdministrationFacade;
+  AdministrationFacade -> GreenhouseFacade;
+  GreenhouseFacade -> SoilSensorArray; GreenhouseFacade -> IrrigationScheduler; GreenhouseFacade -> ReservationRepository;
+  GreenhouseFacade -> IrrigationController; GreenhouseFacade -> VentilationUnit; GreenhouseFacade -> ClimateRepository;
+  GreenhouseFacade -> NutrientDispenser; GreenhouseFacade -> AlertService; GreenhouseFacade -> NutritionRepository;
+  GreenhouseFacade -> CycleRepository;
+  AdministrationFacade -> ReservationRepository [style=dashed]; AdministrationFacade -> ClimateRepository [style=dashed]; AdministrationFacade -> NutritionRepository [style=dashed]; AdministrationFacade -> CycleRepository [style=dashed];
+  ReservationRepository -> WaterReservation; ClimateRepository -> ClimateAction; NutritionRepository -> NutritionRecord; CycleRepository -> CycleRecord;
+  ReservationRepository -> CsvStore; ClimateRepository -> CsvStore; NutritionRepository -> CsvStore; CycleRepository -> CsvStore;
+}

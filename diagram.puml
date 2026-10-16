@@ -1,0 +1,73 @@
+@startuml
+skinparam classAttributeIconSize 0
+left to right direction
+
+package "Client / UI" {
+ class Main
+}
+package "Facade layer" {
+ class GreenhouseFacade {
+ +startCycle(id, moisture)
+ +executeB(id, humidity, pump, fan)
+ +finishC(id, stock)
+ +resume(id, ...)
+ +runCycle(id, ...)
+ +compensate(id)
+ }
+ class AdministrationFacade {
+ +inspect(id)
+ +listCycles()
+ +manuallyCompensate(id)
+ }
+ class CycleRecord
+ class CycleRepository
+}
+package "A: Reservation" {
+ class SoilSensorArray
+ class IrrigationScheduler
+ class WaterReservation
+ class ReservationRepository
+}
+package "B: Execution" {
+ class IrrigationController
+ class VentilationUnit
+ class ClimateAction
+ class ClimateRepository
+}
+package "C: Confirmation" {
+ class NutrientDispenser
+ class AlertService
+ class NutritionRecord
+ class NutritionRepository
+}
+package "Shared infrastructure" {
+ class CsvStore
+ class GreenhouseException
+}
+
+Main --> GreenhouseFacade
+Main --> AdministrationFacade
+AdministrationFacade --> GreenhouseFacade : manual compensation
+AdministrationFacade --> CycleRepository
+AdministrationFacade --> ReservationRepository
+AdministrationFacade --> ClimateRepository
+AdministrationFacade --> NutritionRepository
+GreenhouseFacade --> CycleRepository
+GreenhouseFacade --> SoilSensorArray
+GreenhouseFacade --> IrrigationScheduler
+GreenhouseFacade --> ReservationRepository
+GreenhouseFacade --> IrrigationController
+GreenhouseFacade --> VentilationUnit
+GreenhouseFacade --> ClimateRepository
+GreenhouseFacade --> NutrientDispenser
+GreenhouseFacade --> AlertService
+GreenhouseFacade --> NutritionRepository
+ReservationRepository --> WaterReservation
+ClimateRepository --> ClimateAction
+NutritionRepository --> NutritionRecord
+CycleRepository --> CycleRecord
+ReservationRepository --> CsvStore
+ClimateRepository --> CsvStore
+NutritionRepository --> CsvStore
+CycleRepository --> CsvStore
+@enduml
